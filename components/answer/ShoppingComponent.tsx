@@ -1,113 +1,216 @@
-// 1. Import the 'useState' hook from React
+'use client';
+
 import { useState } from 'react';
-import { IconPlus, IconClose } from '@/components/ui/icons';
+import { ChevronDown, ChevronUp, ExternalLink, Star, X } from 'lucide-react';
 
-// 2. Define the 'ShoppingItem' interface based on the structure of the shopping data
 interface ShoppingItem {
-    title: string;
-    source: string;
-    link: string;
-    price: string;
-    delivery: string;
-    imageUrl: string;
-    rating: number;
-    ratingCount: number;
-    offers: string;
-    productId: string;
-    position: number;
+  title: string;
+  source: string;
+  link: string;
+  price: string;
+  delivery: string;
+  imageUrl: string;
+  rating: number;
+  ratingCount: number;
+  offers: string;
+  productId: string;
+  position: number;
 }
 
-// 3. Define the 'ShoppingComponentProps' interface with a 'shopping' property of type 'ShoppingItem[]'
 interface ShoppingComponentProps {
-    shopping: ShoppingItem[];
+  shopping: ShoppingItem[];
 }
 
-// 4. Define the 'ShoppingComponent' functional component that takes 'shopping' as a prop
-const ShoppingComponent: React.FC<ShoppingComponentProps> = ({ shopping }) => {
-    console.log('shopping', shopping);
-    // 5. Use the 'useState' hook to manage the 'showModal' state
-    const [showModal, setShowModal] = useState(false);
+export default function ShoppingComponent({ shopping }: ShoppingComponentProps) {
+  const [showModal, setShowModal] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
-    // 6. Define the 'ShoppingSkeleton' component to render a loading skeleton
-    const ShoppingSkeleton = () => (
-        <>
-            {Array.from({ length: 5 }).map((_, index) => (
-                <div key={index} className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gray-300 dark:bg-gray-700 rounded-full animate-pulse"></div>
-                    <div className="flex-grow">
-                        <div className="w-2/3 h-4 bg-gray-300 dark:bg-gray-700 rounded animate-pulse mb-2"></div>
-                        <div className="w-1/2 h-4 bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
-                    </div>
-                </div>
-            ))}
-        </>
-    );
+  const visibleItems = showMore ? shopping : shopping.slice(0, 3);
 
-    // 7. Render the 'ShoppingComponent'
-    return (
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 mt-4">
-            <div className="flex items-center">
-                <h2 className="text-lg font-semibold flex-grow text-gray-900 dark:text-gray-100">Shopping Results</h2>
-                <IconPlus className="w-4 h-4 cursor-pointer text-gray-500 dark:text-gray-400" onClick={() => setShowModal(true)} />
-            </div>
-            <div className="mt-4">
-                {shopping.length === 0 ? (
-                    <ShoppingSkeleton />
-                ) : (
-                    shopping.slice(0, 3).map((item, index) => (
-                        <div key={index} className="flex items-center space-x-4 mb-4">
-                            <div className="w-10 h-10 overflow-hidden flex-shrink-0">
-                                <a href={item.link} target="_blank" rel="noopener noreferrer">
-                                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover rounded-full" />
-                                </a>
-                            </div>
-                            <div className="flex-grow">
-                                <a href={item.link} target="_blank" rel="noopener noreferrer" className="font-semibold text-sm mb-1 hover:underline text-gray-900 dark:text-gray-100">{item.title}</a>
-                                <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
-                                    <span className="mr-1">{item.source}</span>
-                                    <span className="text-yellow-500 mr-1">{'★'.repeat(Math.floor(item.rating))}</span>
-                                    <span>({item.ratingCount})</span>
-                                </div>
-                                <p className="text-gray-900 dark:text-gray-100 font-semibold text-sm">{item.price}</p>
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="fixed inset-0 bg-black opacity-10 transition-opacity" onClick={() => setShowModal(false)}></div>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-3xl w-full mx-auto overflow-hidden relative">
-                        <div className="sticky top-0 bg-white dark:bg-gray-800 px-6 py-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Shopping Results</h2>
-                            <IconClose className="w-6 h-6 cursor-pointer text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition duration-150 ease-in-out" onClick={() => setShowModal(false)} />
-                        </div>
-                        <div className="overflow-y-auto p-6 space-y-6 max-h-[70vh]">
-                            {shopping.map((item, index) => (
-                                <div key={index} className="flex items-center space-x-6">
-                                    <div className="w-24 h-24 overflow-hidden flex-shrink-0 rounded">
-                                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                                            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
-                                        </a>
-                                    </div>
-                                    <div className="flex-grow">
-                                        <a href={item.link} target="_blank" rel="noopener noreferrer" className="font-bold text-xl mb-2 hover:underline text-gray-900 dark:text-gray-100">{item.title}</a>
-                                        <p className="text-gray-500 dark:text-gray-400 text-base mb-2">{item.source}</p>
-                                        <div className="flex items-center mb-2">
-                                            <span className="text-yellow-500 text-lg mr-1">{'★'.repeat(Math.floor(item.rating))}</span>
-                                            <span className="text-gray-500 dark:text-gray-400 text-sm">{item.ratingCount}</span>
-                                        </div>
-                                        <p className="text-gray-900 dark:text-gray-100 font-bold text-lg mb-2">{item.price}</p>
-                                        {item.delivery && <p className="text-gray-500 dark:text-gray-400 text-base">{item.delivery}</p>}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            )}
+  const ShoppingSkeleton = () => (
+    <div className="space-y-3">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div key={index} className="flex gap-3 bg-gray-800 p-3 rounded-lg animate-pulse">
+          <div className="w-12 h-12 bg-gray-700 rounded-lg"></div>
+          <div className="flex-1">
+            <div className="h-4 bg-gray-700 rounded w-3/4 mb-2"></div>
+            <div className="h-3 bg-gray-700 rounded w-1/2 mb-2"></div>
+            <div className="h-3 bg-gray-700 rounded w-1/4"></div>
+          </div>
         </div>
-    );
-};
+      ))}
+    </div>
+  );
 
-export default ShoppingComponent;
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M9 22C9.55228 22 10 21.5523 10 21C10 20.4477 9.55228 20 9 20C8.44772 20 8 20.4477 8 21C8 21.5523 8.44772 22 9 22Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M20 22C20.5523 22 21 21.5523 21 21C21 20.4477 20.5523 20 20 20C19.4477 20 19 20.4477 19 21C19 21.5523 19.4477 22 20 22Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M1 1H5L7.68 14.39C7.77144 14.8504 8.02191 15.264 8.38755 15.5583C8.75318 15.8526 9.2107 16.009 9.68 16H19.4C19.8693 16.009 20.3268 15.8526 20.6925 15.5583C21.0581 15.264 21.3086 14.8504 21.4 14.39L23 6H6"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <h2 className="text-lg font-medium text-gray-200">Shopping</h2>
+
+        <button
+          onClick={() => setShowModal(true)}
+          className="ml-auto text-gray-400 hover:text-gray-200 transition-colors">
+          <ExternalLink size={16} />
+        </button>
+      </div>
+
+      {shopping.length === 0 ? (
+        <ShoppingSkeleton />
+      ) : (
+        <>
+          <div className="space-y-3">
+            {visibleItems.map((item, index) => (
+              <a
+                key={index}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex gap-3 bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors group">
+                <div className="w-12 h-12 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
+                  <img
+                    src={item.imageUrl || '/placeholder.svg'}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-gray-200 truncate group-hover:text-white transition-colors">
+                    {item.title}
+                  </h3>
+
+                  <div className="flex items-center mt-1">
+                    <div className="flex items-center text-yellow-400 mr-1">
+                      <Star size={12} fill="currentColor" />
+                    </div>
+                    <span className="text-xs text-gray-400">
+                      {item.rating.toFixed(1)} ({item.ratingCount})
+                    </span>
+                  </div>
+
+                  <div className="text-sm font-medium text-gray-200 mt-1">{item.price}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          {shopping.length > 3 && (
+            <button
+              onClick={() => setShowMore(!showMore)}
+              className="flex items-center justify-center gap-1 mt-3 text-sm text-gray-400 hover:text-gray-200 transition-colors w-full">
+              {showMore ? (
+                <>
+                  <ChevronUp size={16} />
+                  <span>Show less</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  <span>Show more</span>
+                </>
+              )}
+            </button>
+          )}
+        </>
+      )}
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80" onClick={() => setShowModal(false)}></div>
+
+          <div className="relative bg-neutral-800 rounded-lg shadow-xl max-w-3xl w-full max-h-[80vh] overflow-hidden animate-in fade-in zoom-in-95 duration-300">
+            <div className="sticky top-0 bg-neutral-800 px-6 py-4 flex items-center justify-between border-b border-stone-700">
+              <h2 className="text-xl font-semibold text-gray-200">Shopping Results</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-200 transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="overflow-y-auto p-6 space-y-6">
+              {shopping.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex gap-6 hover:bg-gray-800 p-4 rounded-lg transition-colors group">
+                  <div className="w-24 h-24 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
+                    <img
+                      src={item.imageUrl || '/placeholder.svg'}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-medium text-gray-200 group-hover:text-white transition-colors">
+                      {item.title}
+                    </h3>
+
+                    <p className="text-gray-400 text-sm mt-1">{item.source}</p>
+
+                    <div className="flex items-center mt-2">
+                      <div className="flex items-center text-yellow-400 mr-2">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            fill={i < Math.floor(item.rating) ? 'currentColor' : 'none'}
+                            className={
+                              i < Math.floor(item.rating) ? 'text-yellow-400' : 'text-gray-600'
+                            }
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-gray-400">({item.ratingCount})</span>
+                    </div>
+
+                    <div className="text-lg font-semibold text-gray-200 mt-2">{item.price}</div>
+
+                    {item.delivery && <p className="text-gray-400 text-sm mt-1">{item.delivery}</p>}
+                  </div>
+
+                  <div className="text-gray-400 self-center">
+                    <ExternalLink size={16} />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

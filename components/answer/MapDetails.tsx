@@ -1,83 +1,130 @@
-// @ts-nocheck 
-"use client";
-import React, { useState } from 'react';
-import { IconPlus, IconClose } from '@/components/ui/icons';
+'use client';
+
+import type React from 'react';
+
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, MapPin, Phone, Globe } from 'lucide-react';
 
 interface Place {
-    cid: React.Key | null | undefined;
-    latitude: number;
-    longitude: number;
-    title: string;
-    address: string;
-    rating: number;
-    category: string;
-    phoneNumber?: string;
-    website?: string;
+  cid: React.Key | null | undefined;
+  latitude: number;
+  longitude: number;
+  title: string;
+  address: string;
+  rating: number;
+  category: string;
+  phoneNumber?: string;
+  website?: string;
 }
 
-const LocationSidebar = ({ places }: { places: Place[] }) => {
-    const [showMore, setShowMore] = useState(false);
-    // only show the first 5 places
-    places = places.slice(0, 4);
+export default function MapDetails({ places }: { places: Place[] }) {
+  const [showMore, setShowMore] = useState(false);
+  // only show the first 5 places
+  const displayPlaces = places.slice(0, 5);
+  const visiblePlaces = showMore ? displayPlaces : displayPlaces.slice(0, 2);
 
-    return (
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 mt-4">
-            <div className="flex items-center">
-                <h2 className="text-lg font-semibold flex-grow text-black dark:text-white">Location Details</h2>
-                {places.length > 3 && (
-                    <div className="flex justify-center ml-2">
-                        <button
-                            className="text-black dark:text-white focus:outline-none"
-                            onClick={() => setShowMore(!showMore)}>
-                            {showMore ? <IconClose /> : <IconPlus />}
-                        </button>
-                    </div>
-                )}
-            </div>
-            <div className={`space-y-4 transition-all duration-500 ${showMore ? 'max-h-[5000px]' : 'max-h-[300px]'} overflow-hidden`}>
-                {places?.slice(0, showMore ? places.length : 3).map((place: Place) => (
-                    <div key={place.cid} className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                        <h3 className="text-lg font-semibold mb-2">{place.title}</h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">{place.address}</p>
-                        <div className="flex items-center mb-2">
-                            <span className="text-gray-600 dark:text-gray-400 text-sm mr-1">Rating:</span>
-                            <div className="flex items-center">
-                                {[...Array(5)].map((_, index) => (
-                                    <svg
-                                        key={index}
-                                        className={`w-4 h-4 ${index < Math.floor(place.rating)
-                                                ? 'text-yellow-400'
-                                                : 'text-gray-300 dark:text-gray-500'
-                                            }`}
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path
-                                            fillRule="evenodd"
-                                            d="M10 15.585l-5.293 2.776.1-5.867L.416 8.222l5.875-.855L10 2.415l3.709 4.952 5.875.855-4.391 4.272.1 5.867L10 15.585z"
-                                            clipRule="evenodd"
-                                        />
-                                    </svg>
-                                ))}
-                            </div>
-                        </div>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">Category: {place.category}</p>
-                        {place.phoneNumber && (
-                            <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
-                                Phone: <a href={`tel:${place.phoneNumber}`} className="text-blue-500 hover:underline">{place.phoneNumber}</a>
-                            </p>
-                        )}
-                        {place.website && (
-                            <p className="text-gray-600 dark:text-gray-400 text-sm truncate">
-                                Website: <a href={place.website} className="text-blue-500 hover:underline">{place.website}</a>
-                            </p>
-                        )}
-                    </div>
-                ))}
-            </div>
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
-    );
-};
+        <h2 className="text-lg font-medium text-gray-200">Location Details</h2>
+      </div>
 
-export default LocationSidebar;
+      <div className="space-y-3">
+        {visiblePlaces.map((place: Place) => (
+          <div key={place.cid} className="bg-gray-800 rounded-lg p-3">
+            <h3 className="text-base font-medium text-gray-200 mb-1">{place.title}</h3>
+            <div className="flex items-start gap-2 text-sm text-gray-400 mb-1">
+              <MapPin size={14} className="flex-shrink-0 mt-0.5" />
+              <span>{place.address}</span>
+            </div>
+
+            <div className="flex items-center mb-1">
+              <div className="flex items-center text-yellow-400 mr-1">
+                {[...Array(5)].map((_, index) => (
+                  <svg
+                    key={index}
+                    className={`w-3 h-3 ${index < Math.floor(place.rating) ? 'text-yellow-400' : 'text-gray-600'}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M10 15.585l-5.293 2.776.1-5.867L.416 8.222l5.875-.855L10 2.415l3.709 4.952 5.875.855-4.391 4.272.1 5.867L10 15.585z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                ))}
+              </div>
+              <span className="text-xs text-gray-400">{place.rating.toFixed(1)}</span>
+            </div>
+
+            <div className="text-xs text-gray-400 mb-2">Category: {place.category}</div>
+
+            <div className="flex flex-wrap gap-2">
+              {place.phoneNumber && (
+                <a
+                  href={`tel:${place.phoneNumber}`}
+                  className="flex items-center gap-1 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-gray-300 transition-colors">
+                  <Phone size={12} />
+                  <span>Call</span>
+                </a>
+              )}
+
+              {place.website && (
+                <a
+                  href={place.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs text-gray-300 transition-colors">
+                  <Globe size={12} />
+                  <span>Website</span>
+                </a>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {displayPlaces.length > 2 && (
+        <button
+          onClick={() => setShowMore(!showMore)}
+          className="flex items-center justify-center gap-1 mt-3 text-sm text-gray-400 hover:text-gray-200 transition-colors w-full">
+          {showMore ? (
+            <>
+              <ChevronUp size={16} />
+              <span>Show less</span>
+            </>
+          ) : (
+            <>
+              <ChevronDown size={16} />
+              <span>Show more</span>
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}

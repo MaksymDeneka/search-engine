@@ -1,124 +1,146 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel";
-import { YoutubeLogo } from '@phosphor-icons/react';
+import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 
-// 1. Define the 'Video' interface to represent a video object
 interface Video {
-    link: string;
+  link: string;
 }
 
-// 2. Define the 'VideosComponentProps' interface to specify the props for the 'VideosComponent'
 interface VideosComponentProps {
-    videos: Video[];
+  videos: Video[];
 }
 
-// 3. Define the 'VideosComponent' functional component that accepts 'VideosComponentProps'
-const VideosComponent: React.FC<VideosComponentProps> = ({ videos }) => {
-    // 4. Declare state variables using the 'useState' hook
-    const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
-    const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+export default function VideosComponent({ videos }: VideosComponentProps) {
+  const [loadedImages, setLoadedImages] = useState<boolean[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    // 5. Use the 'useEffect' hook to initialize the 'loadedImages' state based on the number of videos
-    useEffect(() => {
-        setLoadedImages(Array(videos.length).fill(false));
-    }, [videos]);
+  useEffect(() => {
+    setLoadedImages(Array(videos.length).fill(false));
+  }, [videos]);
 
-    // 6. Define the 'handleImageLoad' function to update the 'loadedImages' state when an image is loaded
-    const handleImageLoad = (index: number) => {
-        setLoadedImages((prevLoadedImages) => {
-            const updatedLoadedImages = [...prevLoadedImages];
-            updatedLoadedImages[index] = true;
-            return updatedLoadedImages;
-        });
-    };
+  const handleImageLoad = (index: number) => {
+    setLoadedImages((prevLoadedImages) => {
+      const updatedLoadedImages = [...prevLoadedImages];
+      updatedLoadedImages[index] = true;
+      return updatedLoadedImages;
+    });
+  };
 
-    // 7. Define the 'handleVideoSelect' function to set the 'selectedVideo' state when a thumbnail is clicked
-    const handleVideoSelect = (link: string) => {
-        setSelectedVideo(link);
-    };
+  const nextVideo = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % videos.length);
+    setSelectedVideo(null);
+  };
 
-    // 8. Define the 'VideosSkeleton' component to display a loading skeleton while videos are loading
-    const VideosSkeleton = () => (
-        <div className="w-full p-1 ">
-            <div className="w-full overflow-hidden aspect-video mt-5">
-                <div className="w-full h-full bg-gray-300 dark:bg-gray-700 rounded animate-pulse"></div>
-            </div>
-        </div>
+  const prevVideo = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + videos.length) % videos.length);
+    setSelectedVideo(null);
+  };
+
+  const VideosSkeleton = () => (
+    <div className="w-full h-40 bg-gray-800 rounded-lg animate-pulse"></div>
+  );
+
+  const getYouTubeVideoId = (url: string) => {
+    const match = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
     );
-
-    // 9. Render the 'VideosComponent' JSX
-    return (
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg mt-4 w-full px-2 flex items-center justify-center">
-            {/* 10. Render the video carousel */}
-            <Carousel
-                opts={{
-                    align: "start",
-                }}
-                orientation="vertical"
-                className="w-full max-w-xs"
-            >
-                <CarouselContent className=" h-[175px] mx-auto">
-                    {videos.length === 0 ? (
-                        <VideosSkeleton />
-                    ) : (
-                        videos.map((video, index) => {
-                            const videoId = getYouTubeVideoId(video.link);
-                            const imageUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-
-                            return (
-                                <CarouselItem key={index} className="py-5 md:basis-1/2 ">
-                                    <div className="p-1">
-                                        <Card>
-                                            <CardContent className="flex items-center justify-center p-0  h-[150px]">
-                                                {selectedVideo === video.link ? (
-                                                    <iframe
-                                                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                                                        title={`YouTube Video ${index}`}
-                                                        allowFullScreen
-                                                        className="w-full h-full rounded-lg"
-                                                        allow='autoplay'
-                                                    ></iframe>
-                                                ) : (
-                                                    <div
-                                                        className="rounded-lg w-full overflow-hidden aspect-video transition-all duration-200 cursor-pointer"
-                                                        onClick={() => handleVideoSelect(video.link)}
-                                                    >
-                                                        <img
-                                                            src={imageUrl}
-                                                            alt={`Video ${index}`}
-                                                            className={`clip-yt-img w-full h-auto rounded-lg transition-all duration-200 ${loadedImages[index] ? 'block' : 'hidden'}`}
-                                                            onLoad={() => handleImageLoad(index)}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </CardContent>
-                                        </Card>
-                                    </div>
-                                </CarouselItem>
-                            );
-                        })
-                    )}
-                </CarouselContent>
-                <div className="hidden lg:flex justify-center mt-2">
-                    <CarouselPrevious className="top-[90px] left-[310px] " />
-                    <CarouselNext className="bottom-[5px] left-[310px] w-8 h-8" />
-                </div>
-            </Carousel>
-        </div>
-    );
-};
-
-// 11. Define the 'getYouTubeVideoId' function to extract the YouTube video ID from a URL
-const getYouTubeVideoId = (url: string) => {
-    const match = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
     return match ? match[1] : '';
-};
+  };
 
-export default VideosComponent;
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M10 8L16 12L10 16V8Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <h2 className="text-lg font-medium text-gray-200">Videos</h2>
+
+        {videos.length > 1 && (
+          <div className="flex items-center gap-1 ml-auto">
+            <button
+              onClick={prevVideo}
+              className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">
+              <ChevronLeft size={14} />
+            </button>
+            <button
+              onClick={nextVideo}
+              className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-800 text-gray-400 hover:text-gray-200 transition-colors">
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {videos.length === 0 ? (
+        <VideosSkeleton />
+      ) : (
+        <div className="relative overflow-hidden rounded-lg aspect-video">
+          {videos.map((video, index) => {
+            const videoId = getYouTubeVideoId(video.link);
+            const imageUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+            return (
+              <div
+                key={video.link}
+                className={`absolute inset-0 transition-opacity duration-300 ${
+                  index === currentIndex ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}>
+                {selectedVideo === video.link ? (
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                    title={`YouTube Video ${index}`}
+                    allowFullScreen
+                    className="w-full h-full"
+                    allow="autoplay"></iframe>
+                ) : (
+                  <>
+                    {!loadedImages[index] && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                        <div className="w-8 h-8 border-2 border-gray-600 border-t-gray-300 rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                    <img
+                      src={imageUrl || '/placeholder.svg'}
+                      alt={`Video thumbnail ${index}`}
+                      className={`w-full h-full object-cover ${loadedImages[index] ? 'block' : 'hidden'}`}
+                      onLoad={() => handleImageLoad(index)}
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <button
+                        onClick={() => setSelectedVideo(video.link)}
+                        className="w-16 h-16 flex items-center justify-center rounded-full bg-neutral-800/80 text-gray-200 hover:text-white hover:bg-gray-800/80 transition-colors">
+                        <Play size={24} fill="currentColor" />
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}

@@ -7,7 +7,6 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './ai_hooks/**/*.{js,ts,jsx,tsx}',
-    
   ],
   theme: {
     extend: {
@@ -17,8 +16,7 @@ const config: Config = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       colors: {
         green: {
@@ -34,9 +32,9 @@ const config: Config = {
           '900': '#135436',
           '950': '#042f1c',
         },
-				gray: {
-					'900': '#14161c',
-				},
+        // gray: {
+        // 	'900': '#14161c',
+        // },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

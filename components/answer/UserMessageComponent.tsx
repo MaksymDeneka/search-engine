@@ -1,18 +1,36 @@
-// 1. Interface defining the props for UserMessageComponent, expecting a 'message' of type string.
 interface UserMessageComponentProps {
-    message: string;
+  message: string;
 }
 
-// 2. UserMessageComponent functional component that renders a message within styled div elements.
-const UserMessageComponent: React.FC<UserMessageComponentProps> = ({ message }) => {
-    return (
-        <div className="dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 mt-4">
-            <div className="flex items-center">
-                {/* 3. Render Message component*/}
-                <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">{message}</h2>
-            </div>
+export default function UserMessageComponent({ message }: UserMessageComponentProps) {
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
-    );
-};
-
-export default UserMessageComponent;
+        <p className="text-gray-200 font-medium">{message}</p>
+      </div>
+    </div>
+  );
+}

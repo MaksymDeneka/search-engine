@@ -2,97 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: ;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --ring: 240 5% 64.9%;
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: ;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
-    --ring: 240 3.7% 15.9%;
-  }
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 224.3 76.3% 48%;
 }
 
-.keyboard-visible {
-  transform: translateY(-100%);
-  transition: transform 0.3s ease-in-out;
+* {
+  @apply border-border;
 }
 
-.leaflet-popup-content p {
-  margin: 0 !important;
+body {
+  @apply bg-background text-foreground;
 }
 
-/* leaflet made me do it.. */
-.bring-to-front {
-  z-index: 99999 !important;
-}
-
-.bring-to-front-modal {
-  z-index: 99999999 !important;
-}
-
-.rate-limit-modal {
-  z-index: 999999999999 !important;
-}
-
-/* tradingview mobile */
-.my-5.tradingview-widget-container {
-  height: 150px !important;
-}
-
-/* Markdown styles */
-/* Markdown styles */
 .markdown-container {
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-  color: #333;
-  font-size: 16px;
+  @apply text-gray-300;
 }
 
 .markdown-container h1,
@@ -101,113 +65,89 @@
 .markdown-container h4,
 .markdown-container h5,
 .markdown-container h6 {
-  font-weight: bold;
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.3em;
+  @apply text-gray-200 font-medium mt-4 mb-2;
 }
 
 .markdown-container h1 {
-  font-size: 1.5em;
+  @apply text-2xl;
 }
 
 .markdown-container h2 {
-  font-size: 1.4em;
+  @apply text-xl;
 }
 
 .markdown-container h3 {
-  font-size: 1.3em;
-}
-
-.markdown-container h4 {
-  font-size: 1.2em;
-}
-
-.markdown-container h5 {
-  font-size: 1.1em;
-}
-
-.markdown-container h6 {
-  font-size: 1em;
+  @apply text-lg;
 }
 
 .markdown-container p {
-  margin-bottom: 1em;
-}
-
-.markdown-container strong {
-  font-weight: bold;
-}
-
-.markdown-container em {
-  font-style: italic;
-}
-
-.markdown-container a {
-  color: #000;
-  text-decoration: underline;
-}
-
-.markdown-container code {
-  font-family: monospace;
-  font-size: 0.9em;
-  padding: 0.2em 0.4em;
-  background-color: #f6f8fa;
-  border-radius: 3px;
-}
-
-.markdown-container pre {
-  font-family: monospace;
-  font-size: 0.9em;
-  padding: 1em;
-  overflow: auto;
-  background-color: #f6f8fa;
-  border-radius: 3px;
-}
-
-.markdown-container pre code {
-  padding: 0;
-  background-color: transparent;
+  @apply mb-4;
 }
 
 .markdown-container ul,
 .markdown-container ol {
-  margin-bottom: 1em;
-  padding-left: 2em;
+  @apply mb-4 pl-5;
 }
 
-.markdown-container ul li,
-.markdown-container ol li {
-  margin-bottom: 0.5em;
+.markdown-container ul {
+  @apply list-disc;
 }
 
-.markdown-container ul li {
-  list-style-type: disc;
+.markdown-container ol {
+  @apply list-decimal;
 }
 
-.markdown-container ol li {
-  list-style-type: decimal;
+.markdown-container li {
+  @apply mb-1;
+}
+
+.markdown-container a {
+  @apply text-blue-400 hover:underline;
+}
+
+.markdown-container code {
+  @apply bg-gray-800 px-1 py-0.5 rounded text-sm;
+}
+
+.markdown-container pre {
+  @apply bg-gray-800 p-3 rounded-lg overflow-x-auto mb-4;
+}
+
+.markdown-container pre code {
+  @apply bg-transparent p-0;
 }
 
 .markdown-container blockquote {
-  margin: 1em 0;
-  padding: 0.5em 1em;
-  border-left: 4px solid #ddd;
-  color: #666;
+  @apply border-l-4 border-gray-700 pl-4 italic my-4;
 }
 
-.markdown-container hr {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin: 1.5em 0;
+.markdown-container table {
+  @apply w-full border-collapse mb-4;
 }
 
-.fixed.inset-0.z-50.bg-black\/80.data-\[state\=open\]\:animate-in.data-\[state\=closed\]\:animate-out.data-\[state\=closed\]\:fade-out-0.data-\[state\=open\]\:fade-in-0 {
-  z-index: 99999;
+.markdown-container th,
+.markdown-container td {
+  @apply border border-gray-700 p-2;
 }
 
-.clip-yt-img {
-  margin-top: -24px;
-  clip-path: inset(30px 0 30px 0);
+.markdown-container th {
+  @apply bg-gray-800;
+}
+
+.bg-gradient-to-r {
+  background-size: 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

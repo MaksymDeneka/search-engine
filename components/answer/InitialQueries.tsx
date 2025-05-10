@@ -1,36 +1,25 @@
-import React from 'react';
-import { IconPlus } from '@/components/ui/icons';
+'use client';
+
+import { ArrowRight } from 'lucide-react';
 
 interface InitialQueriesProps {
   questions: string[];
   handleFollowUpClick: (question: string) => void;
 }
 
-const InitialQueries = ({ questions, handleFollowUpClick }: InitialQueriesProps) => {
-  const handleQuestionClick = (question: string) => {
-    handleFollowUpClick(question);
-  };
-  
+export default function InitialQueries({ questions, handleFollowUpClick }: InitialQueriesProps) {
   return (
-    <div className="">
-      <div className="flex items-center">
-      </div>
-      <ul className="mt-2">
-        {questions.map((question, index) => (
-          <li
-            key={index}
-            className="flex items-center cursor-pointer dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 my-2"
-            onClick={() => handleQuestionClick(question)}
-          >
-            <span role="img" aria-label="link" className="mr-2 dark:text-white text-black">
-              <IconPlus />
-            </span>
-            <p className="dark:text-white block sm:inline text-md sm:text-lg font-semibold text-black">{question}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="space-y-2">
+      {questions.map((question, index) => (
+        <button
+          key={index}
+          className="w-full flex items-center justify-between p-3 bg-neutral-800 hover:bg-gray-800 border border-stone-700 rounded-lg text-left text-gray-300 transition-colors animate-in fade-in duration-300"
+          style={{ animationDelay: `${index * 100}ms` }}
+          onClick={() => handleFollowUpClick(question)}>
+          <span>{question}</span>
+          <ArrowRight size={16} className="text-gray-500" />
+        </button>
+      ))}
     </div>
   );
-};
-
-export default InitialQueries;
+}
