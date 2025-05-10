@@ -1,43 +1,41 @@
-import { IconPlus, IconClose } from '@/components/ui/icons';
+"use client"
 
+import { Plus } from "lucide-react"
 
-// 1. Defines the FollowUp interface with a 'choices' property that contains an array of objects with a 'message' property, which in turn has a 'content' property of type string.
 interface FollowUp {
-    choices: {
-        message: {
-            content: string;
-        };
-    }[];
+  choices: {
+    message: {
+      content: string
+    }
+  }[]
 }
 
-// 2. Defines the FollowUpComponent functional component that takes 'followUp' and 'handleFollowUpClick' as props.
-const FollowUpComponent = ({ followUp, handleFollowUpClick }: { followUp: FollowUp; handleFollowUpClick: (question: string) => void }) => {
-    const handleQuestionClick = (question: string) => {
-        handleFollowUpClick(question);
-    };
+interface FollowUpComponentProps {
+  followUp: FollowUp
+  handleFollowUpClick: (question: string) => void
+}
 
-    return (
-        <div className="dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 mt-4">
-            <div className="flex items-center">
-                <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">Follow-Up</h2>
-            </div>
-            <ul className="mt-2">
-                {followUp.choices[0].message.content && JSON.parse(followUp.choices[0].message.content).followUp.map((question: string, index: number) => (
-                    <li
-                        key={index}
-                        className="flex items-center mt-2 cursor-pointer"
-                        onClick={() => handleQuestionClick(question)}
-                    >
-                        <span role="img" aria-label="link" className="mr-2 dark:text-white text-black">
-                            <IconPlus />
-                        </span>
-                        <p className="dark:text-white text-black hover:underline">{`${question}`}</p>
-                    </li>
-                ))}
-            </ul>
-        </div >
-    );
-};
+export default function FollowUpComponent({ followUp, handleFollowUpClick }: FollowUpComponentProps) {
+  const handleQuestionClick = (question: string) => {
+    handleFollowUpClick(question)
+  }
 
-
-export default FollowUpComponent;
+  return (
+    <div className="mt-4">
+      <h3 className="text-sm font-medium text-gray-400 mb-2">Follow-up questions</h3>
+      <div className="flex flex-wrap gap-2">
+        {followUp.choices[0].message.content &&
+          JSON.parse(followUp.choices[0].message.content).followUp.map((question: string, index: number) => (
+            <button
+              key={index}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-full text-sm transition-colors"
+              onClick={() => handleQuestionClick(question)}
+            >
+              <Plus size={14} />
+              <span>{question}</span>
+            </button>
+          ))}
+      </div>
+    </div>
+  )
+}

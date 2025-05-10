@@ -1,125 +1,134 @@
-// 1. Import the 'useState' and 'useEffect' hooks from React
+'use client';
+
 import { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 
-// 2. Define the 'SearchResult' interface with properties for 'favicon', 'link', and 'title'
 export interface SearchResult {
-    favicon: string;
-    link: string;
-    title: string;
+  favicon: string;
+  link: string;
+  title: string;
 }
 
-// 3. Define the 'SearchResultsComponentProps' interface with a 'searchResults' property of type 'SearchResult[]'
 export interface SearchResultsComponentProps {
-    searchResults: SearchResult[];
+  searchResults: SearchResult[];
 }
 
-// 4. Define the 'SearchResultsComponent' functional component that takes 'searchResults' as a prop
-const SearchResultsComponent = ({ searchResults }: { searchResults: SearchResult[] }) => {
-    // 5. Use the 'useState' hook to manage the 'isExpanded' and 'loadedFavicons' state
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [loadedFavicons, setLoadedFavicons] = useState<boolean[]>([]);
+export default function SearchResultsComponent({
+  searchResults,
+}: {
+  searchResults: SearchResult[];
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [loadedFavicons, setLoadedFavicons] = useState<boolean[]>([]);
 
-    // 6. Use the 'useEffect' hook to initialize the 'loadedFavicons' state based on the 'searchResults' length
-    useEffect(() => {
-        setLoadedFavicons(Array(searchResults.length).fill(false));
-    }, [searchResults]);
+  useEffect(() => {
+    setLoadedFavicons(Array(searchResults.length).fill(false));
+  }, [searchResults]);
 
-    // 7. Define the 'toggleExpansion' function to toggle the 'isExpanded' state
-    const toggleExpansion = () => setIsExpanded(!isExpanded);
+  const toggleExpansion = () => setIsExpanded(!isExpanded);
 
-    // 8. Define the 'visibleResults' variable to hold the search results to be displayed based on the 'isExpanded' state
-    const visibleResults = isExpanded ? searchResults : searchResults.slice(0, 3);
+  const visibleResults = isExpanded ? searchResults : searchResults.slice(0, 3);
 
-    // 9. Define the 'handleFaviconLoad' function to update the 'loadedFavicons' state when a favicon is loaded
-    const handleFaviconLoad = (index: number) => {
-        setLoadedFavicons((prevLoadedFavicons) => {
-            const updatedLoadedFavicons = [...prevLoadedFavicons];
-            updatedLoadedFavicons[index] = true;
-            return updatedLoadedFavicons;
-        });
-    };
+  const handleFaviconLoad = (index: number) => {
+    setLoadedFavicons((prevLoadedFavicons) => {
+      const updatedLoadedFavicons = [...prevLoadedFavicons];
+      updatedLoadedFavicons[index] = true;
+      return updatedLoadedFavicons;
+    });
+  };
 
-    // 10. Define the 'SearchResultsSkeleton' component to render a loading skeleton
-    const SearchResultsSkeleton = () => (
+  const SearchResultsSkeleton = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {Array.from({ length: isExpanded ? searchResults.length : 3 }).map((_, index) => (
+        <div key={`skeleton-${index}`} className="bg-gray-800 p-3 rounded-lg animate-pulse">
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 bg-gray-700 rounded-full"></div>
+            <div className="w-3/4 h-4 bg-gray-700 rounded"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M21 21L16.65 16.65"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <h2 className="text-lg font-medium text-gray-200">Sources</h2>
+      </div>
+
+      {searchResults.length === 0 ? (
+        <SearchResultsSkeleton />
+      ) : (
         <>
-            {Array.from({ length: isExpanded ? searchResults.length : 3 }).map((_, index) => (
-                <div key={`skeleton-${index}`} className="p-2 w-full sm:w-1/2 md:w-1/4">
-                    <div className="flex items-center space-x-2 dark:bg-slate-700 bg-gray-100 p-3 rounded-lg h-full">
-                        {searchResults[index]?.favicon.length > 0 && (
-                            <div className="w-5 h-5 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                        )}
-                        <div className="w-full h-4 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                    </div>
-                </div>
-            ))}
-            {/* Add a skeleton for the "View more" button */}
-            <div className="w-full sm:w-full md:w-1/4 p-2">
-                <div className="flex items-center space-x-2 dark:bg-slate-700 bg-gray-100 p-3 rounded-lg h-12 justify-center">
-                    <div className="w-5 h-5 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                    <div className="w-5 h-5 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                    <div className="w-5 h-5 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                    <div className="w-full h-4 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                </div>
-            </div>
-        </>
-    );
-
-    // 11. Render the 'SearchResultsComponent'
-    return (
-        <div className="dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 mt-4">
-            <div className="flex items-center">
-                <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">Sources</h2>
-            </div>
-            <div className="flex flex-wrap my-2">
-                {searchResults.length === 0 ? (
-                    // 12. Render the 'SearchResultsSkeleton' if there are no search results
-                    <SearchResultsSkeleton />
-                ) : (
-                    <>
-                        {/* 13. Render the search results with favicon, title, and link */}
-                        {visibleResults.map((result, index) => (
-                            <div key={`searchResult-${index}`} className="p-2 w-full md:w-1/4">
-                                <div className="flex items-center space-x-2 dark:bg-slate-700 bg-gray-100 p-3 rounded-lg h-full">
-                                    {result.favicon.length > 0 && !loadedFavicons[index] && (
-                                        <div className="w-5 h-5 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
-                                    )}
-                                    {result.favicon.length > 0 && (
-                                        <img
-                                            src={result.favicon}
-                                            alt="favicon"
-                                            className={`w-5 h-5 ${loadedFavicons[index] ? 'block' : 'hidden'}`}
-                                            onLoad={() => handleFaviconLoad(index)}
-                                        />
-                                    )}
-                                    < a href={result.link} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold truncate dark:text-gray-200 dark:hover:text-white text-gray-700 hover:text-black">
-                                        {result.title}
-                                    </a>
-                                </div>
-                            </div>
-                        ))}
-                        {/* 14. Render a button to toggle the expansion of search results */}
-                        <div className="w-full sm:w-full md:w-1/4 p-2">
-                            <div
-                                onClick={toggleExpansion}
-                                className="flex items-center space-x-2 dark:bg-slate-700 bg-gray-100 p-3 rounded-lg cursor-pointer h-12 justify-center"
-                            >
-                                {!isExpanded ? (
-                                    <>
-                                        {searchResults.slice(0, 3).map((result, index) => (
-                                            result.favicon.length ? <img key={`favicon-${index}`} src={result.favicon} alt="favicon" className="w-4 h-4" /> : null
-                                        ))}
-                                        <span className="text-sm font-semibold dark:text-gray-200 text-gray-700">View more</span>
-                                    </>
-                                ) : (
-                                    <span className="text-sm font-semibold dark:text-gray-200 text-gray-700">Show Less</span>
-                                )}
-                            </div>
-                        </div>
-                    </>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-11">
+            {visibleResults.map((result, index) => (
+              <a
+                key={`searchResult-${index}`}
+                href={result.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 p-3 rounded-lg transition-colors group">
+                {result.favicon.length > 0 && !loadedFavicons[index] && (
+                  <div className="w-5 h-5 bg-gray-700 rounded-full animate-pulse"></div>
                 )}
-            </div>
-        </div >
-    )
-};
+                {result.favicon.length > 0 && (
+                  <img
+                    src={result.favicon || '/placeholder.svg'}
+                    alt=""
+                    className={`w-5 h-5 rounded-full ${loadedFavicons[index] ? 'block' : 'hidden'}`}
+                    onLoad={() => handleFaviconLoad(index)}
+                  />
+                )}
+                <span className="text-sm font-medium text-gray-300 group-hover:text-gray-100 truncate flex-1">
+                  {result.title}
+                </span>
+                <ExternalLink size={14} className="text-gray-500 group-hover:text-gray-300" />
+              </a>
+            ))}
+          </div>
 
-export default SearchResultsComponent;
+          {searchResults.length > 3 && (
+            <button
+              onClick={toggleExpansion}
+              className="flex items-center justify-center gap-1 mt-3 text-sm text-gray-400 hover:text-gray-200 transition-colors w-full">
+              {isExpanded ? (
+                <>
+                  <ChevronUp size={16} />
+                  <span>Show less</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  <span>Show more</span>
+                </>
+              )}
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

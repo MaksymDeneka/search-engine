@@ -1,151 +1,229 @@
-import React, { useState } from 'react';
-import { type AI } from '../../app/action';
+'use client';
+
+import { useState } from 'react';
 import { useActions } from 'ai/rsc';
 import Markdown from 'react-markdown';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Copy, Check, ArrowsCounterClockwise } from "@phosphor-icons/react";
-import 'react-tooltip/dist/react-tooltip.css'
-import { Tooltip } from 'react-tooltip'
+import { Check, Copy, RefreshCw } from 'lucide-react';
+import type { AI } from '../../app/action';
 
-
-
-
+interface LLMResponseComponentProps {
+  llmResponse: string;
+  currentLlmResponse: string;
+  index: number;
+  semanticCacheKey: string;
+  isolatedView: boolean;
+  logo?: string;
+}
 
 const Modal = ({ message, onClose }: { message: string; onClose: () => void }) => {
-    React.useEffect(() => {
-        const timer = setTimeout(onClose, 3000);
-        return () => clearTimeout(timer);
-    }, [onClose]);
-
-    return (
-        <div className="fixed top-0 right-0 mt-4 mr-4 z-50 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4 w-full max-w-sm">
-            <div className="flex items-center">
-                <h2 className="text-lg font-semibold flex-grow text-black dark:text-white">Notice</h2>
-                <div className="flex justify-center ml-2">
-                    <button className="text-black dark:text-white focus:outline-none" onClick={onClose}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" className="h-4 w-4">
-                            <path d="M224 128a8 8 0 0 1-8 8h-80v80a8 8 0 0 1-16 0v-80H40a8 8 0 0 1 0-16h80V40a8 8 0 0 1 16 0v80h80a8 8 0 0 1 8 8Z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div className="flex flex-wrap mx-1 w-full transition-all duration-500 max-h-[200px] overflow-hidden">
-                <div className="text-black dark:text-white">
-                    {message}
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="fixed top-4 right-4 z-50 bg-neutral-800 border border-stone-700 rounded-lg p-4 w-full max-w-sm animate-in slide-in-from-top duration-300">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-gray-200">Notice</h2>
+        <button className="text-gray-400 hover:text-gray-200 transition-colors" onClick={onClose}>
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M18 6L6 18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M6 6L18 18"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+      <div className="mt-2 text-gray-300">{message}</div>
+    </div>
+  );
 };
 
 const StreamingComponent = ({ currentLlmResponse }: { currentLlmResponse: string }) => {
-    return (
-        <>
-            {currentLlmResponse && (
-                <div className="dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 mt-4">
-                    <div className="flex items-center">
-                        <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">Answer</h2>
-                        <img src="./groq.png" alt="groq logo" className='w-6 h-6' />
-                    </div>
-                    <div className="dark:text-gray-300 text-gray-800">{currentLlmResponse}</div>
-                </div>
-            )}
-        </>
-    );
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 16V12"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 8H12.01"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <h2 className="text-lg font-medium text-gray-200">Answer</h2>
+      </div>
+      <div className="text-gray-300 pl-11">
+        <div className="animate-pulse">{currentLlmResponse}</div>
+      </div>
+    </div>
+  );
 };
-
-interface LLMResponseComponentProps {
-    llmResponse: string;
-    currentLlmResponse: string;
-    index: number;
-    semanticCacheKey: string;
-    isolatedView: boolean;
-    logo?: string;
-}
 
 const SkeletonLoader = () => {
-    return (
-        <div className="dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 mt-4">
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <div className="w-4 h-4 bg-gray-700 rounded-full animate-pulse"></div>
+        </div>
+        <div className="h-5 bg-gray-800 rounded-full w-24 animate-pulse"></div>
+      </div>
+      <div className="pl-11 space-y-2">
+        <div className="h-4 bg-gray-800 rounded-full w-full animate-pulse"></div>
+        <div className="h-4 bg-gray-800 rounded-full w-5/6 animate-pulse"></div>
+        <div className="h-4 bg-gray-800 rounded-full w-4/6 animate-pulse"></div>
+      </div>
+    </div>
+  );
+};
+
+export default function LLMResponseComponent({
+  llmResponse,
+  currentLlmResponse,
+  index,
+  semanticCacheKey,
+  isolatedView,
+  logo,
+}: LLMResponseComponentProps) {
+  const { clearSemanticCache } = useActions<typeof AI>();
+  const [showModal, setShowModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const hasLlmResponse = llmResponse && llmResponse.trim().length > 0;
+  const hasCurrentLlmResponse = currentLlmResponse && currentLlmResponse.trim().length > 0;
+
+  const handleClearCache = () => {
+    clearSemanticCache(semanticCacheKey);
+    setShowModal(true);
+  };
+
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (!hasLlmResponse && !hasCurrentLlmResponse) {
+    return <SkeletonLoader />;
+  }
+
+  if (!hasLlmResponse && hasCurrentLlmResponse) {
+    return <StreamingComponent currentLlmResponse={currentLlmResponse} />;
+  }
+
+  return (
+    <div className={isolatedView ? 'max-w-4xl mx-auto' : ''}>
+      {showModal && (
+        <Modal
+          message={`The query of '${semanticCacheKey}' has been cleared from cache.`}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
+      <div className="bg-neutral-800 rounded-lg border border-stone-700 p-4 animate-in fade-in duration-300">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M12 16V12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M12 8H12.01"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <h2 className="text-lg font-medium text-gray-200">Answer</h2>
+          {logo && (
+            <img src={logo || '/placeholder.svg'} alt="Provider logo" className="h-6 ml-auto" />
+          )}
+        </div>
+
+        <div className="text-gray-300 pl-11 markdown-container prose prose-invert prose-sm max-w-none">
+          <Markdown>{llmResponse}</Markdown>
+        </div>
+
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-stone-700">
+          <div className="flex items-center gap-3">
+            <CopyToClipboard text={llmResponse} onCopy={handleCopy}>
+              <button
+                className="text-gray-400 hover:text-gray-200 transition-colors flex items-center gap-1.5 text-sm"
+                aria-label="Copy to clipboard">
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? 'Copied' : 'Copy'}
+              </button>
+            </CopyToClipboard>
+
+            {!isolatedView && (
+              <button
+                className="text-gray-400 hover:text-gray-200 transition-colors flex items-center gap-1.5 text-sm"
+                onClick={handleClearCache}
+                aria-label="Refresh response">
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+            )}
+          </div>
+
+          {!isolatedView && (
             <div className="flex items-center">
-                <div className="h-4 bg-gray-300 rounded-full dark:bg-gray-600 w-32 mb-4 animate-pulse"></div>
+              <img src="./powered-by-groq.svg" alt="powered by groq" className="h-5" />
             </div>
-            <div className="flex flex-col space-y-2">
-                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-700 w-full animate-pulse delay-75"></div>
-                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-700 w-3/4 animate-pulse delay-100"></div>
-                <div className="h-2 bg-gray-300 rounded-full dark:bg-gray-700 w-2/3 animate-pulse delay-150"></div>
-            </div>
+          )}
         </div>
-    );
-};
-
-const LLMResponseComponent = ({ llmResponse, currentLlmResponse, index, semanticCacheKey, isolatedView, logo }: LLMResponseComponentProps) => {
-    const { clearSemanticCache } = useActions<typeof AI>();
-    const [showModal, setShowModal] = useState(false);
-    const [copied, setCopied] = useState(false);
-
-    const hasLlmResponse = llmResponse && llmResponse.trim().length > 0;
-    const hasCurrentLlmResponse = currentLlmResponse && currentLlmResponse.trim().length > 0;
-
-    const handleClearCache = () => {
-        clearSemanticCache(semanticCacheKey);
-        setShowModal(true);
-    };
-
-    return (
-        <div className={isolatedView ? 'flex flex-col max-w-[1200px] mx-auto' : ''}>
-            {showModal && (
-                <Modal
-                    message={`The query of '${semanticCacheKey}' has been cleared from cache. `}
-                    onClose={() => setShowModal(false)}
-                />
-            )}
-
-            {hasLlmResponse || hasCurrentLlmResponse ? (
-                <>
-                    {hasLlmResponse ? (
-                        <div className="dark:bg-slate-800 bg-white shadow-lg rounded-lg p-4 mt-4">
-                            <div className="flex items-center">
-                                <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">Response</h2>
-                            </div>
-                            <div className="dark:text-gray-300 text-gray-800 markdown-container">
-                                <Markdown>{llmResponse}</Markdown>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-between">
-                                    <CopyToClipboard text={llmResponse} onCopy={() => setCopied(true)}>
-                                        <button id="not-clickable" className="text-black dark:text-white focus:outline-none mr-2">
-                                            {copied ? <Check size={20} /> : <Copy size={20} />}
-                                            <Tooltip anchorSelect="#not-clickable">
-                                                <button>Copy</button>
-                                            </Tooltip>
-                                        </button>
-                                    </CopyToClipboard>
-                                    {!isolatedView && (
-                                        <button id="#not-clickable2" className="text-black dark:text-white focus:outline-none" onClick={handleClearCache}>
-                                            <ArrowsCounterClockwise size={20} />
-                                        </button>
-                                    )}
-
-                                </div>
-                                {!isolatedView && (
-                                    <div className="flex items-center justify-end">
-                                        <img src="./powered-by-groq.svg" alt="powered by groq" className='mt-2 h-6' />
-                                    </div>
-                                )}
-                                {logo && (
-                                    <img src={logo} alt="logo" className='mt-2 h-6 ml-auto' />
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <StreamingComponent currentLlmResponse={currentLlmResponse} />
-                    )}
-                </>
-            ) : (
-                <SkeletonLoader />
-            )}
-        </div>
-    );
-};
-
-export default LLMResponseComponent;
+      </div>
+    </div>
+  );
+}

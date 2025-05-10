@@ -1,40 +1,37 @@
-// 1. Define the 'ImageProps' interface with optional 'src' and 'query' properties
 interface ImageProps {
-    src?: string;
-    query?: string;
+  src?: string;
+  query?: string;
 }
 
-// 2. Define the 'Image' functional component that takes 'src' and 'query' as props
-export default function Image({ src, query }: ImageProps) {
-    // 3. Render the 'Image' component
-    return (
-        <div className="flex flex-col max-w-[1200px] mx-auto">
-            <div className="flex items-center max-w-[1200px] max-h-full shadow-lg p-4 mt-4 rounded-lg relative">
-                {!src ? (
-                    // 4. Render the skeleton loader only for the image
-                    <div className="w-[600px] h-[600px] bg-gray-300 rounded-lg animate-pulse mr-6"></div>
-                ) : (
-                    <img
-                        src={src}
-                        alt="Full size"
-                        className="w-[600px] h-[600px] rounded-lg mr-6"
-                    />
-                )}
-                <div className="flex-1 flex flex-col justify-center items-center">
-                    {query && (
-                        <div className="text-black text-xl font-bold mb-4">
-                            {query}
-                        </div>
-                    )}
-                </div>
-                <div className="absolute bottom-4 right-4">
-                    <img
-                        src="./fal.svg"
-                        alt="powered by fal.ai"
-                        className="h-6"
-                    />
-                </div>
+export default function ImageGenerationComponent({ src, query }: ImageProps) {
+  return (
+    <div className="bg-neutral-800 rounded-lg border border-stone-700 p-6 animate-in fade-in duration-300">
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        {!src ? (
+          <div className="w-full md:w-1/2 aspect-square bg-gray-800 rounded-lg animate-pulse"></div>
+        ) : (
+          <div className="w-full md:w-1/2 aspect-square rounded-lg overflow-hidden">
+            <img
+              src={src || '/placeholder.svg'}
+              alt="Generated image"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
+          {query && (
+            <div className="mb-4">
+              <h2 className="text-xl font-medium text-gray-200 mb-2">Prompt</h2>
+              <p className="text-gray-300 bg-gray-800 p-3 rounded-lg">{query}</p>
             </div>
+          )}
+
+          <div className="mt-auto flex items-center self-end">
+            <img src="./fal.svg" alt="powered by fal.ai" className="h-6" />
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

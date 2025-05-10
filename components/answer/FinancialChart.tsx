@@ -1,35 +1,26 @@
-// FinancialChart.jsx
-import React, { useEffect, useRef, memo } from 'react';
+"use client"
 
-const styles = {
-  container: {
-    height: "400px",
-    width: "100%",
-    maxHeight: "400px",
-    minHeight: "400px",
-    "@media (maxWidth: 768px)": {
-      height: "150px",
-      maxHeight: "150px",
-      minHeight: "150px",
-    },
-  },
-};
+import { useEffect, useRef, memo } from "react"
 
-function FinancialChart({ ticker }: { ticker: string }) {
-  const container = useRef<HTMLDivElement>(null);
+interface FinancialChartProps {
+  ticker: string
+}
+
+function FinancialChart({ ticker }: FinancialChartProps) {
+  const container = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-    script.type = "text/javascript";
-    script.async = true;
+    const script = document.createElement("script")
+    script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js"
+    script.type = "text/javascript"
+    script.async = true
     script.innerHTML = `
       {
         "autosize": true,
         "symbol": "${ticker}",
         "interval": "D",
         "timezone": "Etc/UTC",
-        "theme": "light",
+        "theme": "dark",
         "style": "2",
         "locale": "en",
         "enable_publishing": false,
@@ -38,28 +29,52 @@ function FinancialChart({ ticker }: { ticker: string }) {
         "support_host": "https://www.tradingview.com",
         "container_id": "${container.current?.id}"
       }
-    `;
+    `
 
     if (container.current) {
-      container.current.appendChild(script);
+      container.current.appendChild(script)
     }
 
     return () => {
       if (container.current) {
-        container.current.innerHTML = "";
+        container.current.innerHTML = ""
       }
-    };
-  }, []);
+    }
+  }, [ticker])
 
   return (
-    <div className="my-5 tradingview-widget-container" ref={container} style={styles.container}>
-      <div className="tradingview-widget-copyright">
-        <a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank">
-          <span className="blue-text">Track all markets on TradingView</span>
-        </a>
+    <div className="p-4 animate-in fade-in duration-300">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 22H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M3 2V22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M19 9L14 4L9 9L4 4"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <h2 className="text-lg font-medium text-gray-200">Financial Chart: {ticker}</h2>
+      </div>
+
+      <div className="tradingview-widget-container pl-11" ref={container} style={{ height: "400px" }}>
+        <div className="tradingview-widget-copyright">
+          <a
+            href="https://www.tradingview.com/"
+            rel="noreferrer noopener nofollow"
+            target="_blank"
+            className="text-xs text-gray-500 hover:text-gray-400 transition-colors"
+          >
+            Track all markets on TradingView
+          </a>
+        </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default memo(FinancialChart);
+export default memo(FinancialChart)
