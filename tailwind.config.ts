@@ -34,6 +34,9 @@ const config: Config = {
           '900': '#135436',
           '950': '#042f1c',
         },
+				gray: {
+					'900': '#14161c',
+				},
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

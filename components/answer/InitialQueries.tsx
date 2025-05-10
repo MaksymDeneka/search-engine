@@ -25,7 +25,7 @@ const InitialQueries = ({ questions, handleFollowUpClick }: InitialQueriesProps)
             <span role="img" aria-label="link" className="mr-2 dark:text-white text-black">
               <IconPlus />
             </span>
-            <p className="dark:text-white block sm:inline text-md sm:text-lg font-semibold dark:text-white text-black">{question}</p>
+            <p className="dark:text-white block sm:inline text-md sm:text-lg font-semibold text-black">{question}</p>
           </li>
         ))}
       </ul>
